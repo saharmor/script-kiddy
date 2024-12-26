@@ -1,1 +1,1 @@
-whisper
+stable-ts
