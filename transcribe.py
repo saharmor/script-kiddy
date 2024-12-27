@@ -3,7 +3,7 @@ import os
 import sys
 import logging
 import stable_whisper
-from typing import Dict, Optional
+from typing import Optional
 
 @contextmanager
 def suppress_stdout():
@@ -16,16 +16,6 @@ def suppress_stdout():
         finally:
             sys.stdout = old_stdout
 
-class ModelCache:
-    """Cache for storing loaded Whisper models"""
-    _downloaded_models: Dict[str, stable_whisper.WhisperModel] = {}
-
-    @classmethod
-    def get_or_load_model(cls, model_size: str) -> stable_whisper.WhisperModel:
-        if model_size not in cls._downloaded_models:
-            cls._downloaded_models[model_size] = stable_whisper.load_model(model_size)
-            logging.info(f"{model_size} model loaded and cached")
-        return cls._downloaded_models[model_size]
 
 def transcribe_audio(audio_file: str, model_size: str = "large-v3") -> Optional[str]:
     """
@@ -40,7 +30,7 @@ def transcribe_audio(audio_file: str, model_size: str = "large-v3") -> Optional[
     """
     try:
         with suppress_stdout():
-            model = ModelCache.get_or_load_model(model_size)
+            model = stable_whisper.load_model(model_size)
             result = model.transcribe(audio_file)
             return result["text"]
     except Exception as e:
