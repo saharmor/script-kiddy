@@ -1,0 +1,7 @@
+stable-ts
+fastapi
+uvicorn
+python-multipart
+openai
+python-dotenv
+pydantic-settings

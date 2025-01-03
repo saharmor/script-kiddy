@@ -4,8 +4,11 @@ import sys
 import logging
 import stable_whisper
 from typing import Optional
+from dotenv import load_dotenv
 
 # $0.006 per minute / $0.36 per hour (https://openai.com/api/pricing/#:~:text=%240.016%20/%20image-,Audio%20models,-Whisper%20can%20transcribe)
+
+load_dotenv()
 
 @contextmanager
 def suppress_stdout():
@@ -19,17 +22,18 @@ def suppress_stdout():
             sys.stdout = old_stdout
 
 
-def transcribe_audio(audio_file: str, model_size: str = "large-v3") -> Optional[str]:
+def transcribe_audio(audio_file: str, model_size: str = None) -> Optional[str]:
     """
     Transcribe audio file using cached Whisper model
     
     Args:
         audio_file: Path to audio file
-        model_size: Whisper model size to use
+        model_size: Whisper model size to use (defaults to env variable or "large-v3")
     
     Returns:
         Transcribed text or None if error occurs
     """
+    model_size = model_size or os.getenv('WHISPER_MODEL_SIZE', 'large-v3')
     try:
         with suppress_stdout():
             model = stable_whisper.load_model(model_size)
