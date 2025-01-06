@@ -17,7 +17,16 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
   </SelectPrimitive.Trigger>
 ))
 
-const SelectValue = SelectPrimitive.Value
+const SelectValue = React.forwardRef(({ className, children, placeholder, ...props }, ref) => (
+  <SelectPrimitive.Value
+    ref={ref}
+    className={cn('text-sm', className)}
+    placeholder={placeholder}
+    {...props}
+  >
+    {children}
+  </SelectPrimitive.Value>
+))
 
 const SelectContent = React.forwardRef(({ className, children, position = 'popper', ...props }, ref) => (
   <SelectPrimitive.Portal>
