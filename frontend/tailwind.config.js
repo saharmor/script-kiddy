@@ -4,9 +4,9 @@ module.exports = {
   content: [
     './pages/**/*.{js,jsx}',
     './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
+    './app/**/*.{js,jsx, css}',
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./index.html",    
+    "./index.html",
   ],
   prefix: "",
   theme: {

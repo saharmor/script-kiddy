@@ -12,7 +12,7 @@ interface TranscriptionTableProps {
 
 export function TranscriptionTable({ results }: TranscriptionTableProps) {
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto flex-grow flex text-left">
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-100">
