@@ -3,6 +3,7 @@ import { TranscriptionSettings, type TranscriptionModel } from '../components/Tr
 import { TranscriptionDropzone } from '../components/TranscriptionDropzone'
 import { TranscriptionTable } from '../components/TranscriptionTable'
 import React from 'react'
+import '../index.css'
 
 type TranscriptionResult = {
   fileName: string
@@ -15,6 +16,7 @@ export default function Home() {
   const [isTranscribing, setIsTranscribing] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const [results, setResults] = useState<TranscriptionResult[]>([])
+  const [showResults, setShowResults] = useState(false)
 
   const handleFilesDrop = (newFiles: File[]) => {
     if (!isTranscribing) {
@@ -30,7 +32,7 @@ export default function Home() {
 
   const startTranscription = async () => {
     setIsTranscribing(true)
-
+    setShowResults(true)
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
       
@@ -76,11 +78,11 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto pt-20 px-4">
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Audio Transcription</h1>
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
-          {!isTranscribing ? (
+          {!showResults ? (
             <>
               <TranscriptionSettings 
                 selectedModel={selectedModel}
