@@ -78,9 +78,9 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto pt-20 px-4">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Audio Transcription</h1>
+    <div className="flex min-h-screen bg-gray-50 items-start justify-start">
+      <div className="flex-grow flex flex-col mx-auto p-8 text-center">
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Transcription Playground</h1>
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
           {!showResults ? (
             <>
@@ -100,9 +100,6 @@ export default function Home() {
             </>
           ) : (
             <>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">Transcription Progress</h2>
-              </div>
               <TranscriptionTable results={results} />
             </>
           )}
