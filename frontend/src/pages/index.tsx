@@ -80,7 +80,8 @@ export default function Home() {
   return (
     <div className="flex min-h-screen bg-gray-50 items-start justify-start">
       <div className="flex-grow flex flex-col mx-auto p-8 text-center">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Transcription Playground</h1>
+        <h1 className="text-3xl font-bold text-center mb-2 text-gray-800">EchoScribe</h1>
+        <p className="text-gray-600 mb-8">Transcribe recordings and generate insights locally or via a third-party API</p>
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
           {!showResults ? (
             <>
