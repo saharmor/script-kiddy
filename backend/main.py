@@ -1,9 +1,13 @@
+import tempfile
 from fastapi import FastAPI, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import openai
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+
+from utils import compress_audio, convert_to_mp3
+
 
 load_dotenv()
 
@@ -23,27 +27,29 @@ app.add_middleware(
 @app.post("/api/transcribe")
 async def transcribe_audio(audio: UploadFile):
     try:
-        # Save the uploaded file temporarily
-        temp_file_path = f"temp_{audio.filename}"
-        with open(temp_file_path, "wb") as buffer:
+        # Create a temporary file for the uploaded audio
+        with tempfile.NamedTemporaryFile(suffix=os.path.splitext(audio.filename)[1]) as temp_file:
             content = await audio.read()
-            buffer.write(content)
-        
-        # Initialize OpenAI client
-        client = OpenAI()
-        
-        # Transcribe using Whisper
-        with open(temp_file_path, "rb") as audio_file:
-            transcript = client.audio.transcriptions.create(
-                model="whisper-1",
-                file=audio_file
-            )
-            
-        # Clean up temporary file
-        os.remove(temp_file_path)
-        
+            temp_file.write(content)
+            temp_file.flush()
+
+            client = OpenAI()
+
+            # Convert to mp3 to reduce file size
+            if not temp_file.name.endswith('.mp3'):
+                file_to_transcribe = convert_to_mp3(temp_file.name)
+            else:
+                # only compress if already mp3
+                file_to_transcribe = compress_audio(temp_file.name)
+
+            with open(file_to_transcribe, 'rb') as audio_file:
+                transcript = client.audio.transcriptions.create(
+                    model="whisper-1",
+                    file=audio_file
+                )
+           
+
         print(f"Text is: [{transcript.text}]")
         return {"text": transcript.text}
-    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

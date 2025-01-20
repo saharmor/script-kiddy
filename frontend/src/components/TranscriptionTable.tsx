@@ -38,14 +38,45 @@ export function TranscriptionTable({ results }: TranscriptionTableProps) {
 
               <td className="p-4">
                 {result.transcript ? (
-                  <div className="flex items-center gap-2">
-                    <span>{result.transcript}</span>
-                    <button
-                      onClick={() => navigator.clipboard.writeText(result.transcript || '')}
-                      className="px-2 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded"
-                    >
-                      Copy
-                    </button>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <span>
+                        {result.transcript.split(' ').slice(0, 100).join(' ')}
+                        {result.transcript.split(' ').length > 100 && '...'}
+                      </span>
+                      {result.transcript.split(' ').length > 100 && (
+                        <button
+                          onClick={() => {
+                            const modal = document.createElement('div');
+                            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4';
+                            modal.innerHTML = `
+                              <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                                <div class="flex justify-between items-center mb-4">
+                                  <h3 class="text-lg font-semibold">Full Transcript</h3>
+                                  <button class="text-gray-500 hover:text-gray-700" onclick="this.parentElement.parentElement.parentElement.remove()">
+                                    ✕
+                                  </button>
+                                </div>
+                                <p class="text-gray-700 whitespace-pre-wrap">${result.transcript}</p>
+                              </div>
+                            `;
+                            document.body.appendChild(modal);
+                            modal.onclick = (e) => {
+                              if (e.target === modal) modal.remove();
+                            };
+                          }}
+                          className="px-2 py-1 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded"
+                        >
+                          Show More
+                        </button>
+                      )}
+                      <button
+                        onClick={() => navigator.clipboard.writeText(result.transcript || '')}
+                        className="px-2 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded"
+                      >
+                        Copy
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 text-gray-400">
