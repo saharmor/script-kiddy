@@ -30,6 +30,13 @@ export default function Home() {
     }
   }
 
+  const resetTranscriptionState = () => {
+    setShowResults(false);
+    setFiles([]);
+    setResults([]);
+    setIsTranscribing(false)
+  }
+
   const startTranscription = async () => {
     setIsTranscribing(true)
     setShowResults(true)
@@ -102,6 +109,12 @@ export default function Home() {
           ) : (
             <>
               <TranscriptionTable results={results} />
+              <button
+                onClick={resetTranscriptionState}
+                className="mt-6 w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium shadow-sm"
+              >
+                Transcribe More
+              </button>
             </>
           )}
         </div>
@@ -109,3 +122,4 @@ export default function Home() {
     </div>
   )
 } 
+

@@ -26,6 +26,7 @@ app.add_middleware(
 
 @app.post("/api/transcribe")
 async def transcribe_audio(audio: UploadFile):
+    print(f"Transcribing audio: {audio.filename}")
     try:
         # Create a temporary file for the uploaded audio
         with tempfile.NamedTemporaryFile(suffix=os.path.splitext(audio.filename)[1]) as temp_file:
