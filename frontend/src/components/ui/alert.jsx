@@ -1,4 +1,5 @@
 import * as React from "react"
+import PropTypes from 'prop-types'
 import { cn } from "@/lib/utils"
 
 const Alert = React.forwardRef(({ className, variant, ...props }, ref) => (
@@ -31,5 +32,21 @@ const AlertDescription = React.forwardRef(({ className, ...props }, ref) => (
     {...props} />
 ))
 AlertDescription.displayName = "AlertDescription"
+
+Alert.propTypes = {
+  className: PropTypes.string,
+  variant: PropTypes.string,
+  children: PropTypes.node
+}
+
+AlertTitle.propTypes = {
+  className: PropTypes.string,
+  children: PropTypes.node
+}
+
+AlertDescription.propTypes = {
+  className: PropTypes.string,
+  children: PropTypes.node
+}
 
 export { Alert, AlertTitle, AlertDescription }
