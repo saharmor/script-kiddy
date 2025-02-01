@@ -32,8 +32,6 @@ npm run dev
 yarn dev
 ```
 
-The frontend will be available at `http://localhost:5173`
-
 ### Backend Setup
 
 1. Navigate to the backend directory:
@@ -55,31 +53,4 @@ pip install -r requirements.txt
 4. Start the development server:
 ```bash
 python app.py
-```
-
-The backend API will be available at `http://localhost:8000`
-
-## Development
-
-### Frontend
-
-- Run lint checks:
-```bash
-npm run lint
-# or
-yarn lint
-```
-
-- Build for production:
-```bash
-npm run build
-# or
-yarn build
-```
-
-### Backend
-
-- Run tests:
-```bash
-python -m pytest
 ```
