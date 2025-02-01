@@ -7,6 +7,7 @@ A web application with React frontend and Python backend.
 - Node.js (v18 or higher)
 - Python (v3.8 or higher)
 - npm or yarn package manager
+- Vite (install globally with `npm install -g vite` or `yarn global add vite`)
 
 ## Installation
 
@@ -81,15 +82,4 @@ yarn build
 - Run tests:
 ```bash
 python -m pytest
-```
-
-## Project Structure
-
-```
-script-kiddy/
-├── frontend/         # React frontend
-│   ├── src/         # Source files
-│   └── public/      # Static files
-└── backend/         # Python backend
-    └── app.py       # Main application file
 ```
