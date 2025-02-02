@@ -16,5 +16,6 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    allowedHosts: ['repo-access-check-tunnel-h2fx1x0j.devinapps.com'],
   },
 })
