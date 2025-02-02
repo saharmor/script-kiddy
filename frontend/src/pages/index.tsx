@@ -62,10 +62,7 @@ export default function Home() {
 
         const response = await fetch('/api/transcribe', {
           method: 'POST',
-          body: formData,
-          headers: {
-            'Accept': 'application/json'
-          }
+          body: formData
         })
 
         if (!response.ok) {
@@ -132,5 +129,5 @@ export default function Home() {
       </div>
     </div>
   )
-}                  
+}                    
 
