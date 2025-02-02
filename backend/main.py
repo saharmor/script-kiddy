@@ -66,7 +66,10 @@ async def transcribe_audio(audio: UploadFile):
 
             if model == 'local-whisper':
                 result = local_transcribe(file_to_transcribe)
-                transcript = type('Transcript', (), {'text': result['text']})()
+                response = {
+                    "text": result["text"],
+                    "segments": result["segments"]
+                }
             else:
                 client = OpenAI()
                 with open(file_to_transcribe, 'rb') as audio_file:
@@ -74,12 +77,7 @@ async def transcribe_audio(audio: UploadFile):
                         model="whisper-1",
                         file=audio_file
                     )
-           
-
-        response = {"text": transcript.text}
-        if model == 'local-whisper':
-            result = local_transcribe(file_to_transcribe)
-            response["segments"] = result["segments"]
+                response = {"text": transcript.text}
         print(f"Response is: {response}")
         return response
     except Exception as e:

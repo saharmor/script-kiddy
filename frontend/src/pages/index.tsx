@@ -63,6 +63,9 @@ export default function Home() {
         const response = await fetch('/api/transcribe', {
           method: 'POST',
           body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
         })
 
         if (!response.ok) {
@@ -72,11 +75,12 @@ export default function Home() {
         const data = await response.json()
         console.log('Transcription result:', data)
         
-        // Update results with transcript
+        // Update results with transcript and segments
         setResults(prev => prev.map((result, index) => 
           index === i ? { 
             ...result, 
             transcript: data.text,
+            segments: data.segments || [],
             status: 'completed'
           } : result
         ))
@@ -128,5 +132,5 @@ export default function Home() {
       </div>
     </div>
   )
-}  
+}                  
 
