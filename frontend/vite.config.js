@@ -14,8 +14,8 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
+        secure: false,
       },
     },
-    allowedHosts: ['repo-access-check-tunnel-h2fx1x0j.devinapps.com'],
   },
 })

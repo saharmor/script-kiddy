@@ -1,17 +1,18 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import * as React from 'react'
 import * as SelectPrimitive from '@radix-ui/react-select'
 import { cn } from '@/lib/utils'
 
 const Select = SelectPrimitive.Root
 
-const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) => {
-  SelectTrigger.displayName = 'SelectTrigger'
-  return (
+const SelectTrigger = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
       'flex h-10 w-full items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+      className
       className
     )}
     {...props}
@@ -26,12 +27,14 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
   )
 })
 
-const SelectValue = React.forwardRef(({ className, children, placeholder, ...props }, ref) => {
-  SelectValue.displayName = 'SelectValue'
-  return (
+const SelectValue = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Value>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Value>
+>(({ className, children, placeholder, ...props }, ref) => (
   <SelectPrimitive.Value
     ref={ref}
     className={cn('text-sm', className)}
+    {...props}
     placeholder={placeholder}
     {...props}
   >
@@ -40,12 +43,15 @@ const SelectValue = React.forwardRef(({ className, children, placeholder, ...pro
   )
 })
 
-const SelectContent = React.forwardRef(({ className, children, position = 'popper', ...props }, ref) => {
-  SelectContent.displayName = 'SelectContent'
-  return (
+const SelectContent = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+>(({ className, children, position = 'popper', ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
+      position={position}
+      {...props}
       className={cn(
         'relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-gray-200 bg-white text-gray-950 shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
         position === 'popper' &&
@@ -63,11 +69,13 @@ const SelectContent = React.forwardRef(({ className, children, position = 'poppe
   )
 })
 
-const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => {
-  SelectItem.displayName = 'SelectItem'
-  return (
+const SelectItem = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
+>(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}
+    {...props}
     className={cn(
       'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
@@ -86,20 +94,9 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
   )
 })
 
-const baseProps = {
-  className: PropTypes.string,
-  children: PropTypes.node
-}
+SelectTrigger.displayName = "SelectTrigger"
+SelectValue.displayName = "SelectValue"
+SelectContent.displayName = "SelectContent"
+SelectItem.displayName = "SelectItem"
 
-SelectTrigger.propTypes = baseProps
-SelectValue.propTypes = {
-  ...baseProps,
-  placeholder: PropTypes.string
-}
-SelectContent.propTypes = {
-  ...baseProps,
-  position: PropTypes.string
-}
-SelectItem.propTypes = baseProps
-
-export { Select, SelectTrigger, SelectValue, SelectContent, SelectItem }      
+export { Select, SelectTrigger, SelectValue, SelectContent, SelectItem }                                        

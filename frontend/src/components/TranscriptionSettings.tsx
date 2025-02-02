@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select.jsx'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select'
 
 export type TranscriptionModel = 'whisper' | 'assemblyai' | 'local-whisper'
 
@@ -9,12 +9,15 @@ interface TranscriptionSettingsProps {
 }
 
 export function TranscriptionSettings({ selectedModel, onModelChange }: TranscriptionSettingsProps) {
+  const handleValueChange = (value: string) => {
+    onModelChange(value as TranscriptionModel)
+  }
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow-sm">
       <h2 className="text-lg font-semibold mb-4">Transcription Settings</h2>
       <Select
         value={selectedModel}
-        onValueChange={(value) => onModelChange(value as TranscriptionModel)}
+        onValueChange={handleValueChange}
       >
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Select transcription model" />
@@ -27,4 +30,4 @@ export function TranscriptionSettings({ selectedModel, onModelChange }: Transcri
       </Select>
     </div>
   )
-}  
+}              
