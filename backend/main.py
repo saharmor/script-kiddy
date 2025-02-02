@@ -78,7 +78,7 @@ async def transcribe_audio(audio: UploadFile):
                         file=audio_file
                     )
                 response = {"text": transcript.text}
-        print(f"Response is: {response}")
-        return response
+            print(f"Response is: {response}")
+            return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
