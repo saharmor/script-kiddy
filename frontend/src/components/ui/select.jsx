@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import * as SelectPrimitive from '@radix-ui/react-select'
-import { cn } from '../../lib/utils'
+import { cn } from '@/lib/utils'
 
 const Select = SelectPrimitive.Root
 
@@ -102,4 +102,4 @@ SelectContent.propTypes = {
 }
 SelectItem.propTypes = baseProps
 
-export { Select, SelectTrigger, SelectValue, SelectContent, SelectItem }    
+export { Select, SelectTrigger, SelectValue, SelectContent, SelectItem }      

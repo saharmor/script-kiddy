@@ -1,13 +1,27 @@
 import React from 'react'
 
+interface Segment {
+  text: string
+  start: number
+  end: number
+}
+
 interface TranscriptionResult {
   fileName: string
   transcript: string | null
+  segments?: Segment[]
   status: 'pending' | 'processing' | 'completed' | 'error'
 }
 
 interface TranscriptionTableProps {
   results: TranscriptionResult[]
+}
+
+function formatTimestamp(seconds: number): string {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
 }
 
 export function TranscriptionTable({ results }: TranscriptionTableProps) {
@@ -58,6 +72,19 @@ export function TranscriptionTable({ results }: TranscriptionTableProps) {
                                   </button>
                                 </div>
                                 <p class="text-gray-700 whitespace-pre-wrap">${result.transcript}</p>
+                                ${result.segments && result.segments.length > 0 ? `
+                                <div class="mt-6 border-t pt-4">
+                                  <h4 class="text-md font-semibold mb-3">Timestamped Segments</h4>
+                                  <div class="space-y-2">
+                                    ${result.segments.map((segment, idx) => `
+                                      <p class="text-sm">
+                                        <span class="text-gray-500">[${formatTimestamp(segment.start)} - ${formatTimestamp(segment.end)}]</span>
+                                        <span class="ml-2">${segment.text}</span>
+                                      </p>
+                                    `).join('')}
+                                  </div>
+                                </div>
+                                ` : ''}
                               </div>
                             `;
                             document.body.appendChild(modal);
@@ -100,4 +127,4 @@ export function TranscriptionTable({ results }: TranscriptionTableProps) {
       </table>
     </div>
   )
-} 
+}  

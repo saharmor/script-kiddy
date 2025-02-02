@@ -1,7 +1,7 @@
 import React from 'react'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select.jsx'
 
-export type TranscriptionModel = 'whisper' | 'assemblyai'
+export type TranscriptionModel = 'whisper' | 'assemblyai' | 'local-whisper'
 
 interface TranscriptionSettingsProps {
   selectedModel: TranscriptionModel
@@ -22,8 +22,9 @@ export function TranscriptionSettings({ selectedModel, onModelChange }: Transcri
         <SelectContent className="w-full">
           <SelectItem value="whisper">OpenAI Whisper</SelectItem>
           <SelectItem value="assemblyai">AssemblyAI</SelectItem>
+          <SelectItem value="local-whisper">Local Whisper</SelectItem>
         </SelectContent>
       </Select>
     </div>
   )
-} 
+}  
