@@ -5,9 +5,16 @@ import { TranscriptionTable } from '../components/TranscriptionTable'
 import React from 'react'
 import '../index.css'
 
+type Segment = {
+  text: string
+  start: number
+  end: number
+}
+
 type TranscriptionResult = {
   fileName: string
   transcript: string | null
+  segments?: Segment[]
   status: 'pending' | 'processing' | 'completed' | 'error'
 }
 
@@ -121,5 +128,5 @@ export default function Home() {
       </div>
     </div>
   )
-} 
+}  
 

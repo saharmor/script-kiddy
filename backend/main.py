@@ -7,6 +7,26 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from utils import compress_audio, convert_to_mp3
+import stable_whisper
+
+def local_transcribe(audio_file: str) -> dict:
+    """Transcribe audio file using local Whisper model with timestamps"""
+    model_size = os.getenv('WHISPER_MODEL_SIZE', 'large-v3')
+    model = stable_whisper.load_model(model_size)
+    result = model.transcribe(audio_file, language="en")
+    
+    segments = []
+    for segment in result.segments:
+        segments.append({
+            'text': segment.text,
+            'start': segment.start,
+            'end': segment.end
+        })
+    
+    return {
+        'text': result.text,
+        'segments': segments
+    }
 
 
 load_dotenv()
@@ -34,7 +54,8 @@ async def transcribe_audio(audio: UploadFile):
             temp_file.write(content)
             temp_file.flush()
 
-            client = OpenAI()
+            # Get the selected model from form data
+            model = audio.form.get('model', 'whisper')
 
             # Convert to mp3 to reduce file size
             if not temp_file.name.endswith('.mp3'):
@@ -43,14 +64,23 @@ async def transcribe_audio(audio: UploadFile):
                 # only compress if already mp3
                 file_to_transcribe = compress_audio(temp_file.name)
 
-            with open(file_to_transcribe, 'rb') as audio_file:
-                transcript = client.audio.transcriptions.create(
-                    model="whisper-1",
-                    file=audio_file
-                )
+            if model == 'local-whisper':
+                result = local_transcribe(file_to_transcribe)
+                transcript = type('Transcript', (), {'text': result['text']})()
+            else:
+                client = OpenAI()
+                with open(file_to_transcribe, 'rb') as audio_file:
+                    transcript = client.audio.transcriptions.create(
+                        model="whisper-1",
+                        file=audio_file
+                    )
            
 
-        print(f"Text is: [{transcript.text}]")
-        return {"text": transcript.text}
+        response = {"text": transcript.text}
+        if model == 'local-whisper':
+            result = local_transcribe(file_to_transcribe)
+            response["segments"] = result["segments"]
+        print(f"Response is: {response}")
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
