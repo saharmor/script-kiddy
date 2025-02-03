@@ -57,9 +57,6 @@ async def transcribe_audio(
             temp_file.write(content)
             temp_file.flush()
 
-            # Get the selected model from form data
-            model = audio.form.get('model', 'whisper')
-
             # Convert to mp3 to reduce file size
             if not temp_file.name.endswith('.mp3'):
                 file_to_transcribe = convert_to_mp3(temp_file.name)
