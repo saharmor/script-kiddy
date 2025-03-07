@@ -170,3 +170,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 temp.m4a
+
+img_to_pdf_output/
+
+venv/

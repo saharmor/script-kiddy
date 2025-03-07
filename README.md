@@ -1,56 +1,69 @@
-# Script Kiddy
+# Images to PDF Converter
 
-A web application with React frontend and Python backend.
+This script combines images from a directory into a single PDF file, using the image filenames as page numbers.
 
-## Prerequisites
+## Requirements
 
-- Node.js (v18 or higher)
-- Python (v3.8 or higher)
-- npm or yarn package manager
-- Vite (install globally with `npm install -g vite` or `yarn global add vite`)
+Install the required Python packages:
 
-## Installation
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
 ```bash
-cd frontend
+pip install pillow reportlab numpy
 ```
 
-2. Install dependencies:
+## Usage
+
+1. Place your images in the `./input` directory (will be created if it doesn't exist)
+2. Name your images with numbers corresponding to the page order (e.g., `0.jpg`, `1.jpg`, `2.jpg`, etc.)
+3. Run the script:
+
 ```bash
-npm install
-# or
-yarn install
+python images_to_pdf.py
 ```
 
-3. Start the development server:
+By default, this will:
+- Look for images in the `./input` directory
+- Create a PDF file named `output.pdf`
+
+## Command Line Options
+
+You can customize the input directory and output filename:
+
 ```bash
-npm run dev
-# or
-yarn dev
+python images_to_pdf.py --input ./my_images --output my_document.pdf
 ```
 
-### Backend Setup
+Or using the short form:
 
-1. Navigate to the backend directory:
 ```bash
-cd backend
+python images_to_pdf.py -i ./my_images -o my_document.pdf
 ```
 
-2. Create and activate a virtual environment (recommended):
+### Generate Test Images
+
+The script can generate test images for demonstration:
+
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python images_to_pdf.py --test
 ```
 
-3. Install dependencies:
+You can specify the number of test images to generate:
+
 ```bash
-pip install -r requirements.txt
+python images_to_pdf.py --test --num-test-images 10
 ```
 
-4. Start the development server:
-```bash
-python app.py
-```
+## Supported Image Formats
+
+The script supports the following image formats:
+- JPEG (.jpg, .jpeg)
+- PNG (.png)
+- BMP (.bmp)
+- TIFF (.tiff)
+
+## How It Works
+
+1. The script scans the input directory for image files
+2. It extracts page numbers from filenames (e.g., `1.jpg` → page 1)
+3. Images are sorted by page number
+4. Each image is added to the PDF, scaled to fit the page while maintaining aspect ratio
+5. The final PDF is saved to the specified output file
