@@ -10,13 +10,13 @@ interface TranscriptionSettingsProps {
 
 export function TranscriptionSettings({ selectedModel, onModelChange }: TranscriptionSettingsProps) {
   return (
-    <div className="w-full p-4 bg-white rounded-lg shadow-sm">
-      <h2 className="text-lg font-semibold mb-4">Transcription Settings</h2>
+    <div className="w-full p-4 bg-blue-50 rounded-lg shadow-sm border border-blue-100">
+      <h2 className="text-lg font-semibold mb-4 text-red-700">Transcription Settings</h2>
       <Select
         value={selectedModel}
         onValueChange={(value) => onModelChange(value as TranscriptionModel)}
       >
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full border-blue-200 focus:border-blue-400">
           <SelectValue placeholder="Select transcription model" />
         </SelectTrigger>
         <SelectContent className="w-full">

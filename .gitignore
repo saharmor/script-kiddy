@@ -171,6 +171,6 @@ cython_debug/
 .pypirc
 temp.m4a
 
-img_to_pdf_output/
+/img_to_pdf_input/
 
 venv/

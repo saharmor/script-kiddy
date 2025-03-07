@@ -1,5 +1,5 @@
 import tempfile
-from fastapi import FastAPI, UploadFile, HTTPException
+from fastapi import FastAPI, UploadFile, HTTPException, Form, File
 from fastapi.middleware.cors import CORSMiddleware
 import openai
 import os
@@ -45,7 +45,7 @@ app.add_middleware(
 )
 
 @app.post("/api/transcribe")
-async def transcribe_audio(audio: UploadFile):
+async def transcribe_audio(audio: UploadFile = File(...), model: str = Form("whisper")):
     print(f"Transcribing audio: {audio.filename}")
     try:
         # Create a temporary file for the uploaded audio
@@ -54,8 +54,7 @@ async def transcribe_audio(audio: UploadFile):
             temp_file.write(content)
             temp_file.flush()
 
-            # Get the selected model from form data
-            model = audio.form.get('model', 'whisper')
+            print(f"Using model: {model}")
 
             # Convert to mp3 to reduce file size
             if not temp_file.name.endswith('.mp3'):

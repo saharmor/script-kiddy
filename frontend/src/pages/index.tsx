@@ -60,7 +60,7 @@ export default function Home() {
         formData.append('audio', file)
         formData.append('model', selectedModel)
 
-        const response = await fetch('/api/transcribe', {
+        const response = await fetch('http://127.0.0.1:8000/api/transcribe', {
           method: 'POST',
           body: formData,
           headers: {
@@ -96,12 +96,12 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 items-start justify-start">
-      <div className="flex-grow flex flex-col mx-auto p-8 text-center">
-        <h1 className="text-3xl font-bold text-center mb-2 text-gray-800">EchoScribe</h1>
-        <p className="text-gray-600 mb-8">Transcribe recordings and generate insights locally or via a third-party API</p>
+    <div className="min-h-screen bg-blue-50">
+      <div className="max-w-3xl mx-auto pt-20 px-4">
+        <h1 className="text-3xl font-bold text-center mb-2 text-red-800">EchoScribe</h1>
+        <p className="text-blue-700 mb-8">Transcribe recordings and generate insights locally or via a third-party API</p>
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
-          {!showResults ? (
+          {!isTranscribing ? (
             <>
               <TranscriptionSettings 
                 selectedModel={selectedModel}
@@ -111,7 +111,7 @@ export default function Home() {
               {files.length > 0 && (
                 <button
                   onClick={startTranscription}
-                  className="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium shadow-sm"
+                  className="w-full py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-sm"
                 >
                   Start Transcribing ({files.length} {files.length === 1 ? 'file' : 'files'})
                 </button>
@@ -119,13 +119,10 @@ export default function Home() {
             </>
           ) : (
             <>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-blue-800">Transcription Progress</h2>
+              </div>
               <TranscriptionTable results={results} />
-              <button
-                onClick={resetTranscriptionState}
-                className="mt-6 w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium shadow-sm"
-              >
-                Transcribe More
-              </button>
             </>
           )}
         </div>
