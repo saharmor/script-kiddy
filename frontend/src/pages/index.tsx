@@ -101,7 +101,7 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-center mb-2 text-red-800">EchoScribe</h1>
         <p className="text-blue-700 mb-8">Transcribe recordings and generate insights locally or via a third-party API</p>
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-6">
-          {!isTranscribing ? (
+          {!showResults ? (
             <>
               <TranscriptionSettings 
                 selectedModel={selectedModel}
@@ -120,7 +120,18 @@ export default function Home() {
           ) : (
             <>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-blue-800">Transcription Progress</h2>
+                <h2 className="text-xl font-semibold text-blue-800">Transcription {isTranscribing ? 'Progress' : 'Results'}</h2>
+                <button
+                  onClick={resetTranscriptionState}
+                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium flex items-center gap-1"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4V9H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M20 20V15H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M16.5 7.5C18.2239 9.22386 18.2239 11.8358 16.5 13.5597C14.7761 15.2836 12.1642 15.2836 10.4403 13.5597C8.71644 11.8358 8.71644 9.22386 10.4403 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  New Transcription
+                </button>
               </div>
               <TranscriptionTable results={results} />
             </>
