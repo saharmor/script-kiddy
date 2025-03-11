@@ -22,12 +22,23 @@ interface TranscriptionTableProps {
 
 export function TranscriptionTable({ results }: TranscriptionTableProps) {
   const [selectedTranscript, setSelectedTranscript] = useState<TranscriptionResult | null>(null);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   
   const truncateText = (text: string, maxLength: number = 150) => {
     if (!text) return '';
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + '...';
   }
+  
+  const handleCopy = (text: string, index: number) => {
+    navigator.clipboard.writeText(text);
+    setCopiedIndex(index);
+    
+    // Reset after 2 seconds
+    setTimeout(() => {
+      setCopiedIndex(null);
+    }, 2000);
+  };
 
   return (
     <>
@@ -60,11 +71,29 @@ export function TranscriptionTable({ results }: TranscriptionTableProps) {
                     <div className="flex items-center gap-2">
                       <span>{truncateText(result.transcript)}</span>
                       <button
-                      onClick={() => navigator.clipboard.writeText(result.transcript || '')}
-                      className="px-2 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded"
-                    >
-                      Copy
-                    </button>
+                        onClick={() => handleCopy(result.transcript || '', results.indexOf(result))}
+                        disabled={copiedIndex === results.indexOf(result)}
+                        className={`px-2 py-1 text-sm rounded flex items-center gap-1 ${copiedIndex === results.indexOf(result) 
+                          ? 'bg-green-100 text-green-700' 
+                          : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+                      >
+                        {copiedIndex === results.indexOf(result) ? (
+                          <>
+                            <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M5 13L9 17L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                            Copied!
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M8 3C8 2.44772 7.55228 2 7 2H4C3.44772 2 3 2.44772 3 3V13C3 13.5523 3.44772 14 4 14H7C7.55228 14 8 13.5523 8 13V3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M20 6C20 5.44772 19.5523 5 19 5H10C9.44772 5 9 5.44772 9 6V21C9 21.5523 9.44772 22 10 22H19C19.5523 22 20 21.5523 20 21V6Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                            Copy
+                          </>
+                        )}
+                      </button>
                       <Button
                         size="sm"
                         onClick={() => setSelectedTranscript(result)}
