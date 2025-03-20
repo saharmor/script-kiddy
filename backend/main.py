@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from utils import compress_audio, convert_to_mp3
+from utils import convert_to_mp3
 import stable_whisper
 
 def local_transcribe(audio_file: str) -> dict:
@@ -60,8 +60,7 @@ async def transcribe_audio(audio: UploadFile = File(...), model: str = Form("whi
             if not temp_file.name.endswith('.mp3'):
                 file_to_transcribe = convert_to_mp3(temp_file.name)
             else:
-                # only compress if already mp3
-                file_to_transcribe = compress_audio(temp_file.name)
+                file_to_transcribe = temp_file.name
 
             if model == 'local-whisper':
                 result = local_transcribe(file_to_transcribe)
