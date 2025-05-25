@@ -11,6 +11,7 @@ Merges multiple PDF files into a single PDF, handling different page sizes by ce
 import argparse
 from PyPDF2 import PdfReader, PdfWriter, PageObject, Transformation
 import sys
+import copy
 
 
 def get_max_page_size(pdf_paths):
@@ -44,9 +45,11 @@ def merge_pdfs(pdf_paths, output_path):
                 # Calculate offsets to center
                 x_offset = (max_width - width) / 2
                 y_offset = (max_height - height) / 2
-                # Use the new API for PyPDF2 3.0+
-                page.add_transformation(Transformation().translate(tx=x_offset, ty=y_offset))
-                new_page.merge_page(page)
+                # Create a copy of the page to avoid modifying the original
+                page_copy = copy.deepcopy(page)
+                # Use the new API for PyPDF2 3.0+, expand=True is crucial here
+                page_copy.add_transformation(Transformation().translate(tx=x_offset, ty=y_offset), expand=True)
+                new_page.merge_page(page_copy)
                 writer.add_page(new_page)
 
     with open(output_path, "wb") as f:
