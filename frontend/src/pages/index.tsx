@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { TranscriptionSettings, type TranscriptionModel } from '../components/TranscriptionSettings'
 import { TranscriptionDropzone } from '../components/TranscriptionDropzone'
 import { TranscriptionTable } from '../components/TranscriptionTable'
+import { RecordingModal } from '../components/RecordingModal'
 import React from 'react'
 import '../index.css'
 
@@ -24,6 +25,7 @@ export default function Home() {
   const [files, setFiles] = useState<File[]>([])
   const [results, setResults] = useState<TranscriptionResult[]>([])
   const [showResults, setShowResults] = useState(false)
+  const [showRecordingModal, setShowRecordingModal] = useState(false)
 
   const handleFilesDrop = (newFiles: File[]) => {
     if (!isTranscribing) {
@@ -42,6 +44,42 @@ export default function Home() {
     setFiles([]);
     setResults([]);
     setIsTranscribing(false)
+  }
+
+  const handleRecordingComplete = async (audioBlob: Blob, fileName: string) => {
+    try {
+      // Convert webm to mp3 for better compatibility
+      const formData = new FormData()
+      formData.append('audio', audioBlob, `${fileName}.webm`)
+      formData.append('filename', fileName)
+
+      const response = await fetch('http://127.0.0.1:8000/api/save-recording', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to save recording')
+      }
+
+      const data = await response.json()
+      console.log('Recording saved:', data)
+
+      // Create a File object from the blob to add to the files list
+      const file = new File([audioBlob], data.filename, { type: 'audio/webm' })
+      setFiles([file])
+      
+      // Initialize results for the recorded file
+      setResults([{
+        fileName: data.filename,
+        transcript: null,
+        status: 'pending'
+      }])
+
+    } catch (error) {
+      console.error('Error handling recording:', error)
+      alert('Failed to save recording. Please try again.')
+    }
   }
 
   const startTranscription = async () => {
@@ -107,7 +145,43 @@ export default function Home() {
                 selectedModel={selectedModel}
                 onModelChange={setSelectedModel}
               />
-              <TranscriptionDropzone onFilesDrop={handleFilesDrop} />
+              
+              <div className="space-y-4">
+                <div className="text-center">
+                  <div className="flex items-center justify-center space-x-4 mb-4">
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                    <span className="text-gray-500 text-sm">Choose an option</span>
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => setShowRecordingModal(true)}
+                        className="w-full py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium shadow-sm flex items-center justify-center space-x-2"
+                        disabled={isTranscribing}
+                      >
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 1C10.3431 1 9 2.34315 9 4V12C9 13.6569 10.3431 15 12 15C13.6569 15 15 13.6569 15 12V4C15 2.34315 13.6569 1 12 1Z" stroke="currentColor" strokeWidth="2"/>
+                          <path d="M19 10V12C19 16.4183 15.4183 20 11 20C6.58172 20 3 16.4183 3 12V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          <path d="M12 20V23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          <path d="M8 23H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                        <span>Record Audio</span>
+                      </button>
+                      <p className="text-xs text-gray-500">Record directly from your microphone</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="text-center">
+                        <span className="text-gray-700 font-medium">Upload Files</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <TranscriptionDropzone onFilesDrop={handleFilesDrop} />
+              </div>
               {files.length > 0 && (
                 <button
                   onClick={startTranscription}
@@ -138,6 +212,12 @@ export default function Home() {
           )}
         </div>
       </div>
+      
+      <RecordingModal
+        isOpen={showRecordingModal}
+        onClose={() => setShowRecordingModal(false)}
+        onRecordingComplete={handleRecordingComplete}
+      />
     </div>
   )
 }                  

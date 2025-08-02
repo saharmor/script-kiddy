@@ -5,6 +5,7 @@ import openai
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+import pathlib
 
 from utils import convert_to_mp3
 import stable_whisper
@@ -43,6 +44,37 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.post("/api/save-recording")
+async def save_recording(audio: UploadFile = File(...), filename: str = Form(...)):
+    """Save a recorded audio file to Documents/temp_transcribe/"""
+    try:
+        # Create the temp_transcribe directory in Documents
+        documents_path = pathlib.Path.home() / "Documents"
+        temp_dir = documents_path / "temp_transcribe"
+        temp_dir.mkdir(exist_ok=True)
+        
+        # Ensure filename has .mp3 extension
+        if not filename.endswith('.mp3'):
+            filename = f"{filename}.mp3"
+        
+        file_path = temp_dir / filename
+        
+        # Save the audio file
+        content = await audio.read()
+        with open(file_path, 'wb') as f:
+            f.write(content)
+        
+        print(f"Saved recording to: {file_path}")
+        
+        return {
+            "message": "Recording saved successfully",
+            "file_path": str(file_path),
+            "filename": filename
+        }
+    except Exception as e:
+        print(f"Error saving recording: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/transcribe")
 async def transcribe_audio(audio: UploadFile = File(...), model: str = Form("whisper")):
