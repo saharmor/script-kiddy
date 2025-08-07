@@ -47,11 +47,11 @@ app.add_middleware(
 
 @app.post("/api/save-recording")
 async def save_recording(audio: UploadFile = File(...), filename: str = Form(...)):
-    """Save a recorded audio file to Documents/temp_transcribe/"""
+    """Save a recorded audio file to Documents/temp transcribe/"""
     try:
-        # Create the temp_transcribe directory in Documents
+        # Create the temp transcribe directory in Documents
         documents_path = pathlib.Path.home() / "Documents"
-        temp_dir = documents_path / "temp_transcribe"
+        temp_dir = documents_path / "temp transcribe"
         temp_dir.mkdir(exist_ok=True)
         
         # Ensure filename has .mp3 extension
