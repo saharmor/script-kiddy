@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import pathlib
+import re
 
 from utils import convert_to_mp3
 import stable_whisper
@@ -54,11 +55,14 @@ async def save_recording(audio: UploadFile = File(...), filename: str = Form(...
         temp_dir = documents_path / "temp transcribe"
         temp_dir.mkdir(exist_ok=True)
         
-        # Ensure filename has .mp3 extension
-        if not filename.endswith('.mp3'):
-            filename = f"{filename}.mp3"
+        # Sanitize filename - replace problematic characters
+        sanitized_filename = re.sub(r'[<>:"/\\|?*]', '_', filename)
         
-        file_path = temp_dir / filename
+        # Ensure filename has .mp3 extension
+        if not sanitized_filename.endswith('.mp3'):
+            sanitized_filename = f"{sanitized_filename}.mp3"
+        
+        file_path = temp_dir / sanitized_filename
         
         # Save the audio file
         content = await audio.read()
@@ -70,7 +74,7 @@ async def save_recording(audio: UploadFile = File(...), filename: str = Form(...
         return {
             "message": "Recording saved successfully",
             "file_path": str(file_path),
-            "filename": filename
+            "filename": sanitized_filename
         }
     except Exception as e:
         print(f"Error saving recording: {e}")
