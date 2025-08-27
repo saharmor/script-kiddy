@@ -9,6 +9,7 @@ import pathlib
 import re
 
 from utils import convert_to_mp3
+from typing import Optional
 import stable_whisper
 
 def local_transcribe(audio_file: str) -> dict:
@@ -81,7 +82,11 @@ async def save_recording(audio: UploadFile = File(...), filename: str = Form(...
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/transcribe")
-async def transcribe_audio(audio: UploadFile = File(...), model: str = Form("whisper")):
+async def transcribe_audio(
+    audio: UploadFile = File(...),
+    model: str = Form("whisper"),
+    prompt: Optional[str] = Form(None)
+):
     print(f"Transcribing audio: {audio.filename}")
     try:
         # Create a temporary file for the uploaded audio
@@ -91,6 +96,8 @@ async def transcribe_audio(audio: UploadFile = File(...), model: str = Form("whi
             temp_file.flush()
 
             print(f"Using model: {model}")
+            if prompt:
+                print("Received prompt for transcription")
 
             # Convert to mp3 to reduce file size
             if not temp_file.name.endswith('.mp3'):
@@ -107,10 +114,17 @@ async def transcribe_audio(audio: UploadFile = File(...), model: str = Form("whi
             else:
                 client = OpenAI()
                 with open(file_to_transcribe, 'rb') as audio_file:
-                    transcript = client.audio.transcriptions.create(
-                        model="whisper-1",
-                        file=audio_file
-                    )
+                    if prompt:
+                        transcript = client.audio.transcriptions.create(
+                            model="whisper-1",
+                            file=audio_file,
+                            prompt=prompt
+                        )
+                    else:
+                        transcript = client.audio.transcriptions.create(
+                            model="whisper-1",
+                            file=audio_file
+                        )
                 response = {"text": transcript.text}
             print(f"Response is: {response}")
             return response

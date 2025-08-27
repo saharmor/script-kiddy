@@ -26,6 +26,7 @@ export default function Home() {
   const [results, setResults] = useState<TranscriptionResult[]>([])
   const [showResults, setShowResults] = useState(false)
   const [showRecordingModal, setShowRecordingModal] = useState(false)
+  const [prompt, setPrompt] = useState<string>('')
 
   const handleFilesDrop = (newFiles: File[]) => {
     if (!isTranscribing) {
@@ -97,6 +98,9 @@ export default function Home() {
         const formData = new FormData()
         formData.append('audio', file)
         formData.append('model', selectedModel)
+        if (prompt) {
+          formData.append('prompt', prompt)
+        }
 
         const response = await fetch('http://127.0.0.1:8000/api/transcribe', {
           method: 'POST',
@@ -144,6 +148,8 @@ export default function Home() {
               <TranscriptionSettings 
                 selectedModel={selectedModel}
                 onModelChange={setSelectedModel}
+                prompt={prompt}
+                onPromptChange={setPrompt}
               />
               
               <div className="space-y-4">
