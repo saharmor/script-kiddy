@@ -11,6 +11,8 @@ def load_audio(input_path):
         audio = AudioSegment.from_wav(input_path)
     elif file_ext == '.m4a':
         audio = AudioSegment.from_file(input_path, format='m4a')
+    elif file_ext == '.ogg':
+        audio = AudioSegment.from_file(input_path, format='ogg')
     else:
         raise ValueError(f"Unsupported file format: {file_ext}")
     return audio
