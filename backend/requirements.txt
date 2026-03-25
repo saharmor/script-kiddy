@@ -1,9 +1,0 @@
-stable-ts
-fastapi
-uvicorn
-python-multipart
-openai
-python-dotenv
-stable-ts
-pydantic-settings
-pydub
